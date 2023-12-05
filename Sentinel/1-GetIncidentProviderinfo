@@ -1,0 +1,10 @@
+SecurityIncident
+| summarize arg_max(TimeGenerated, *) by IncidentNumber
+//| where IncidentNumber == "xxxxx"
+| extend Alerts = extract("\\[(.*?)\\]", 1, tostring(AlertIds))
+| mv-expand AlertIds to typeof(string)
+| join 
+(
+    SecurityAlert
+) on $left.AlertIds == $right.SystemAlertId
+| project TimeGenerated, IncidentNumber, AlertIds, ProviderName, alertProductNames = ProviderName1
