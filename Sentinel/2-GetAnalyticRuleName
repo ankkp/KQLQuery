@@ -1,0 +1,5 @@
+SecurityAlert
+| extend ARN = parse_json(ExtendedProperties).["Analytic Rule Name"]
+| extend ARIS = parse_json(tostring(parse_json(ExtendedProperties).["Analytic Rule Ids"]))
+| where ARIS contains "<ARI>"
+| distinct ARN, ARIS
